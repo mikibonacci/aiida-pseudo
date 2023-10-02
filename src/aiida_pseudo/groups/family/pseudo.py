@@ -12,7 +12,8 @@ from aiida_pseudo.data.pseudo import PseudoPotentialData
 
 __all__ = ('PseudoPotentialFamily',)
 
-StructureData = DataFactory('core.structure')
+LegacyStructureData = DataFactory('core.structure')
+StructureData = DataFactory("atomistic.structure")
 
 
 class PseudoPotentialFamily(Group):
@@ -308,12 +309,12 @@ class PseudoPotentialFamily(Group):
         self,
         *,
         elements: Union[List[str], Tuple[str]] = None,
-        structure: StructureData = None,
-    ) -> Mapping[str, StructureData]:
+        structure: Union[StructureData,LegacyStructureData] = None,
+    ) -> Mapping[str, Union[StructureData,LegacyStructureData]]:
         """Return the mapping of kind names on pseudo potential data nodes for the given list of elements or structure.
 
         :param elements: list of element symbols.
-        :param structure: the ``StructureData`` node.
+        :param structure: the ``StructureData``  or ``LegacyStructureData`` node.
         :return: dictionary mapping the kind names of a structure on the corresponding pseudo potential data nodes.
         :raises ValueError: if the family does not contain a pseudo for any of the elements of the given structure.
         """
@@ -323,11 +324,11 @@ class PseudoPotentialFamily(Group):
         if elements is None and structure is None:
             raise ValueError('have to specify one of the keyword arguments `elements` and `structure`.')
 
-        if elements is not None and not isinstance(elements, (list, tuple)) and not isinstance(elements, StructureData):
+        if elements is not None and not isinstance(elements, (list, tuple)) and not (isinstance(elements, StructureData) or isinstance(elements, LegacyStructureData)):
             raise ValueError('elements should be a list or tuple of symbols.')
 
-        if structure is not None and not isinstance(structure, StructureData):
-            raise ValueError('structure should be a `StructureData` instance.')
+        if structure is not None and not (isinstance(structure, StructureData) or isinstance(structure, LegacyStructureData)):
+            raise ValueError('structure should be a `StructureData` or `LegacyStructureData` instance.')
 
         if structure is not None:
             return {kind.name: self.get_pseudo(kind.symbol) for kind in structure.kinds}
