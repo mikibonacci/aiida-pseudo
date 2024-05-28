@@ -331,6 +331,6 @@ class PseudoPotentialFamily(Group):
             raise ValueError('structure should be a `StructureData` or `LegacyStructureData` instance.')
 
         if structure is not None:
-            return {kind.name: self.get_pseudo(kind.symbol) for kind in structure.kinds}
+            return {site.kind_name: self.get_pseudo(site.symbol) for site in structure.sites}
 
         return {element: self.get_pseudo(element) for element in elements}
