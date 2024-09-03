@@ -285,7 +285,7 @@ class RecommendedCutoffMixin:
             self.validate_cutoffs_unit(unit)
 
         if structure is not None:
-            symbols = set(structure.get_site_property("symbol")) if isinstance(structure, StructureData) else structure.get_symbols_set()
+            symbols = set(structure.properties.symbols) if isinstance(structure, StructureData) else structure.get_symbols_set()  # noqa: E501
         elif isinstance(elements, tuple):
             symbols = elements
         else:
