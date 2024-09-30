@@ -328,10 +328,12 @@ class PseudoPotentialFamily(Group):
             raise ValueError('elements should be a list or tuple of symbols.')
 
         if structure is not None and not (isinstance(structure, StructureData) or isinstance(structure, LegacyStructureData)):  # noqa: E501
-            raise ValueError('structure should be a `StructureData` or `LegacyStructureData` instance.')
+            raise ValueError(
+                f'structure should be a `StructureData` or `LegacyStructureData` instance, not {type(structure)}.'
+            )
 
         if structure is not None:
             sites = structure.sites if isinstance(structure, LegacyStructureData) else structure.properties.sites
-            return {site.kind_name: self.get_pseudo(site.symbol) for site in sites}
+            return {site.kinds: self.get_pseudo(site.symbols) for site in sites}
 
         return {element: self.get_pseudo(element) for element in elements}
